@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arena Master</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E%F0%9F%8F%9F%EF%B8%8F%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Cozy Creature Arena</p>
+          <h1>Arena Master</h1>
+        </div>
+        <button class="icon-button" id="resetGameBtn" title="Spielstand zuruecksetzen" aria-label="Spielstand zuruecksetzen">↻</button>
+      </header>
+
+      <section class="player-strip" aria-label="Spielerstatus">
+        <div>
+          <span>Name</span>
+          <strong id="playerName">Arenaleiter</strong>
+        </div>
+        <div>
+          <span>Level</span>
+          <strong id="playerLevel">1</strong>
+        </div>
+        <div>
+          <span>Gold</span>
+          <strong id="gold">100</strong>
+        </div>
+        <div>
+          <span>Ruf</span>
+          <strong id="reputation">0</strong>
+        </div>
+        <div>
+          <span>Training</span>
+          <strong id="trainingPoints">10</strong>
+        </div>
+      </section>
+
+      <nav class="tabbar" aria-label="Hauptnavigation">
+        <button class="tab is-active" data-tab="arena">Arena</button>
+        <button class="tab" data-tab="pets">Pets</button>
+        <button class="tab" data-tab="training">Training</button>
+        <button class="tab" data-tab="battle">Kaempfe</button>
+        <button class="tab" data-tab="upgrade">Ausbau</button>
+        <button class="tab" data-tab="log">Log</button>
+      </nav>
+
+      <main>
+        <section class="view is-active" id="arenaView">
+          <div class="arena-stage" id="arenaStage">
+            <div class="sunbeam"></div>
+            <div class="arena-ring">
+              <div class="ring-core">
+                <span id="arenaCrest">🏟️</span>
+                <strong id="arenaTitle">Jung-Arenaleiter</strong>
+                <small>Level <span id="arenaLevel">1</span></small>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-grid">
+            <article class="panel">
+              <h2>Aktive Arena</h2>
+              <p class="muted">Siege: <strong id="wins">0</strong> · Niederlagen: <strong id="losses">0</strong></p>
+              <p class="muted">Naechster besonderer Kampf: <strong id="bossProgress">5 Siege</strong></p>
+              <div class="button-row">
+                <button class="primary" id="startBattleBtn">⚔ Kampf starten</button>
+                <button id="collectIdleBtn">⏳ Idle-Belohnung</button>
+              </div>
+              <div class="notice hidden" id="specialNotice">
+                <strong>Besonderer Herausforderer!</strong>
+                <p>Ein besonderer Herausforderer betritt die Arena. Moechtest du selbst eingreifen?</p>
+                <div class="button-row">
+                  <button id="specialAutoBtn">Auto-Kampf</button>
+                  <button class="primary" id="specialActiveBtn">Aktiv eingreifen</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h2>Aktuelles Team</h2>
+              <div class="team-list" id="teamList"></div>
+            </article>
+
+            <article class="panel">
+              <h2>Herausforderer</h2>
+              <div id="currentNpc"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="petsView">
+          <div class="section-head">
+            <h2>Pet-Sammlung</h2>
+            <p class="muted">Waehle bis zu drei Pets fuer dein Arena-Team.</p>
+          </div>
+          <div class="pet-grid" id="petGrid"></div>
+        </section>
+
+        <section class="view" id="trainingView">
+          <div class="section-head">
+            <h2>Training</h2>
+            <p class="muted">Training kostet 2 Punkte und staerkt ein Pet dauerhaft.</p>
+          </div>
+          <div class="pet-grid compact" id="trainingGrid"></div>
+        </section>
+
+        <section class="view" id="battleView">
+          <div class="section-head">
+            <h2>Kampfplatz</h2>
+            <p class="muted">Normale Kaempfe laufen automatisch. Jeder fuenfte Sieg ruft einen besonderen Herausforderer.</p>
+          </div>
+          <div class="battle-layout">
+            <article class="panel">
+              <h3>Naechster Gegner</h3>
+              <div id="battleNpc"></div>
+              <button class="primary wide" id="battleViewStartBtn">⚔ Kampf starten</button>
+            </article>
+            <article class="panel">
+              <h3>Kampf-Log</h3>
+              <div class="event-log tall" id="battleLog"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="upgradeView">
+          <div class="section-head">
+            <h2>Arena-Ausbau</h2>
+            <p class="muted">Eine groessere Arena bringt bessere Belohnungen und einen neuen Titel.</p>
+          </div>
+          <article class="panel upgrade-panel">
+            <div class="upgrade-preview" id="upgradePreview">🏟️</div>
+            <div>
+              <h3 id="upgradeTitle">Jung-Arenaleiter</h3>
+              <p>Aktuelles Arena-Level: <strong id="upgradeArenaLevel">1</strong></p>
+              <p>Ausbaukosten: <strong id="upgradeCost">150</strong> Gold</p>
+              <button class="primary" id="upgradeArenaBtn">Arena ausbauen</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="logView">
+          <div class="section-head">
+            <h2>Ereignisse</h2>
+            <p class="muted">Die letzten Trainings, Kaempfe, Level-Ups und Belohnungen.</p>
+          </div>
+          <div class="event-log full" id="eventLog"></div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/pets.js"></script>
+    <script src="js/arena.js"></script>
+    <script src="js/battle.js"></script>
+    <script src="js/idle.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
